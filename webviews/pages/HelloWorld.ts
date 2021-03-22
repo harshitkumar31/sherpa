@@ -1,7 +1,7 @@
-import HelloWorld from '../components/HelloWorld.svelte';
+import HelloWorld from "../components/HelloWorld.svelte";
 
 const app = new HelloWorld({
-    target: document.body
+  target: document.body,
 });
 
 export default app;
