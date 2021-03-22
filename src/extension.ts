@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { isSherpaPath } from "./sherpa";
 import { SherpaPanel } from "./SherpaPanel";
 import { SidebarProvider } from "./SidebarProvider";
+import { SherpaConfig } from "./utils/sherpaConfig";
 
 export function activate(context: vscode.ExtensionContext) {
   const sidebarProvider = new SidebarProvider(context.extensionUri);
@@ -23,6 +24,19 @@ export function activate(context: vscode.ExtensionContext) {
         // Check if SherpaConfig exists
         if (await isSherpaPath(fsPath)) {
           return;
+        }
+
+        const sherpaConfig = await SherpaConfig.fromSherpaPath(fsPath);
+
+        const text = editor.document.getText(editor.selection);
+
+        sidebarProvider._view?.webview.postMessage({
+          type: "addNote",
+          sherpaConfig: await sherpaConfig.read(),
+        });
+
+        if (!(await sherpaConfig.configExists())) {
+          sherpaConfig.write(JSON.stringify({}));
         }
       }
     })
