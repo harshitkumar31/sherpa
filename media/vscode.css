@@ -105,3 +105,8 @@ input::placeholder,
 textarea::placeholder {
   color: var(--vscode-input-placeholderForeground);
 }
+
+.svg-vsicon {
+  color: var(--vscode-button-background);
+  height: 30px;
+}

@@ -10,11 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:sherpa-sidebar",
-    "onCommand:sherpa.helloWorld",
-    "onCommand:sherpa.askQuestion",
-    "onCommand:sherpa.refresh",
-    "onCommand:sherpa.addNote"
+    "*"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -54,17 +50,29 @@
         "title": "Refresh"
       },
       {
-        "command": "sherpa.addNote",
+        "command": "sherpa.addWaypoint",
         "title": "Sherpa: Add note at current position"
+      },
+      {
+        "command": "sherpa.createWaypoint",
+        "title": "Create Waypoint",
+        "enablement": "!commentIsEmpty"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "sherpa.addNote"
+          "command": "sherpa.addWaypoint"
         }
       ]
-    }
+    },
+    "comments/commentThread/context": [
+      {
+        "command": "sherpa.createWaypoint",
+        "group": "inline",
+        "when": "commentController == sherpa-comment && commentThreadIsEmpty"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -110,6 +118,7 @@
     "webpack-cli": "^4.4.0"
   },
   "dependencies": {
-    "fs-extra": "^9.1.0"
+    "fs-extra": "^9.1.0",
+    "svelte-icons": "^2.1.0"
   }
 }

@@ -1,8 +1,8 @@
 <script>
     import { onMount } from "svelte";
+    import GiCampingTent from 'svelte-icons/gi/GiCampingTent.svelte'
     
-    
-    let sherpaConfig = {};
+    let sherpaConfig = "{}";
     
     onMount(()=>{
         window.addEventListener("message",(event)=>{
@@ -18,11 +18,10 @@
 <style>
     
 </style>
-<div>
-    
-    <div>{JSON.stringify(sherpaConfig)}</div>
-    
+<div class="svg-vsicon" >
+    <GiCampingTent ></GiCampingTent>
 </div>
+<div>{JSON.parse(sherpaConfig)}</div>
 <button on:click={()=>{
     tsvscode.postMessage({
         type: "onInfo",
