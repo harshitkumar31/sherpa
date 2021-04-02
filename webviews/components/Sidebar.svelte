@@ -1,7 +1,8 @@
 <script>
     import { onMount } from "svelte";
     import GiCampingTent from 'svelte-icons/gi/GiCampingTent.svelte'
-    
+    import MdAdd from 'svelte-icons/md/MdAdd.svelte'
+    import GiForestCamp from 'svelte-icons/gi/GiForestCamp.svelte'
     let sherpaConfig = "{}";
     
     onMount(()=>{
@@ -16,17 +17,31 @@
     });
 </script>
 <style>
-    
+    .sherpa-c-1 {
+        display: flex;
+        align-items: center;
+    }
+    .sherpa-icon {
+        flex: 1 0 0;
+    }
+    .sherpa-journeys {
+        flex: 3 0 0;
+    }
 </style>
-<div class="svg-vsicon" >
-    <GiCampingTent ></GiCampingTent>
+<div class="sherpa-c-1">
+    
+    <div class="sherpa-icon svg-vsicon"
+    ><GiForestCamp ></GiForestCamp></div>
+    <div class="sherpa-journeys">Code Journeys</div>
 </div>
-<div>{JSON.parse(sherpaConfig)}</div>
-<button on:click={()=>{
+<div>
+    
+</div>
+<!-- <div class="svg-vsicon" on:click={()=>{
     tsvscode.postMessage({
-        type: "onInfo",
-        value: "Jaa Naa"
+        type: "command",
+        value: "recordJourney"
     })
 }}>
-Click me
-</button>
+
+</div> -->

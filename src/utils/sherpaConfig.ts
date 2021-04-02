@@ -48,9 +48,9 @@ export class SherpaConfig implements Props {
     });
   }
 
-  async read(): Promise<string> {
+  async read(): Promise<any> {
     const buffer = await fs.readFile(this.configPath);
-    return buffer.toString();
+    return JSON.parse(buffer.toString());
   }
 
   async write(body: string): Promise<void> {

@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { EXTENSION_NAME } from "./constants";
 import { getNonce } from "./getNonce";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
@@ -34,6 +35,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           }
           vscode.window.showErrorMessage(data.value);
           break;
+        }
+        case "command": {
+          vscode.workspace.getWorkspaceFolder(this._extensionUri);
+          vscode.commands.executeCommand(`${EXTENSION_NAME}.recordJourney`, this._extensionUri);
         }
       }
     });

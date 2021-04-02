@@ -107,6 +107,6 @@ textarea::placeholder {
 }
 
 .svg-vsicon {
-  color: var(--vscode-button-background);
+  /* color: var(--vscode-button-background); */
   height: 30px;
 }

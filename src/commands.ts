@@ -1,27 +1,20 @@
 import * as vscode from "vscode";
+import { CommentController } from "vscode";
 import { EXTENSION_NAME } from "./constants";
+import { recordJourney } from "./journey";
 import { isSherpaPath } from "./sherpa";
 import { SherpaPanel } from "./SherpaPanel";
 import { SidebarProvider } from "./SidebarProvider";
 import { SherpaConfig } from "./utils/sherpaConfig";
 import { createWayPoint } from "./waypoint";
 
-export const registerCommands = (context: vscode.ExtensionContext) => {
-  const commentController = vscode.comments.createCommentController(
-    "sherpa-comment",
-    "Comment API Sample"
-  );
-  context.subscriptions.push(commentController);
+export const EDITING_KEY = "sherpa:editing";
+export const RECORDING_KEY = "sherpa:recording";
 
-  commentController.commentingRangeProvider = {
-    provideCommentingRanges: (
-      document: vscode.TextDocument,
-      token: vscode.CancellationToken
-    ) => {
-      const lineCount = document.lineCount;
-      return [new vscode.Range(0, 0, lineCount - 1, 0)];
-    },
-  };
+let commentController: CommentController | null;
+export const registerCommands = (context: vscode.ExtensionContext) => {
+
+  
 
   const sidebarProvider = new SidebarProvider(context.extensionUri);
   context.subscriptions.push(
@@ -77,6 +70,57 @@ export const registerCommands = (context: vscode.ExtensionContext) => {
       `${EXTENSION_NAME}.createWaypoint`,
       (reply: vscode.CommentReply) => {
         createWayPoint(reply);
+        vscode.commands.executeCommand("setContext", RECORDING_KEY, false);
+        vscode.commands.executeCommand("setContext", EDITING_KEY, false);
+        commentController?.dispose();
+      }
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      `${EXTENSION_NAME}.recordJourney`,
+      async(workspaceRoot?: vscode.Uri, placeHolderTitle?: string) => {
+        const inputBox = vscode.window.createInputBox();
+        inputBox.title =
+        "Provide the title for the journey";
+
+        inputBox.placeholder = placeHolderTitle;
+      inputBox.buttons = [
+        {
+          iconPath: new vscode.ThemeIcon("save-as"),
+          tooltip: "Save tour as..."
+        }
+      ];
+
+        inputBox.onDidAccept(async () => {
+          inputBox.hide();
+  
+          if (!inputBox.value) {
+            return;
+          }
+  
+          await recordJourney(inputBox.value, workspaceRoot);
+        });
+
+        inputBox.show();
+        commentController = vscode.comments.createCommentController(
+          "sherpa-comment",
+          "Comment API Sample"
+        );
+        context.subscriptions.push(commentController);
+      
+        commentController.commentingRangeProvider = {
+          provideCommentingRanges: (
+            document: vscode.TextDocument,
+            token: vscode.CancellationToken
+          ) => {
+            const lineCount = document.lineCount;
+            return [new vscode.Range(0, 0, lineCount - 1, 0)];
+          },
+        };
+        vscode.commands.executeCommand("setContext", RECORDING_KEY, true);
+        vscode.commands.executeCommand("setContext", EDITING_KEY, true);
       }
     )
   );

@@ -57,22 +57,52 @@
         "command": "sherpa.createWaypoint",
         "title": "Create Waypoint",
         "enablement": "!commentIsEmpty"
+      },
+      {
+        "command": "sherpa.saveWaypoint",
+        "title": "Save Waypoint",
+        "enablement": "!commentIsEmpty"
+      },
+      {
+        "command": "sherpa.recordJourney",
+        "title": "Record Journey",
+        "category": "Sherpa",
+        "icon": "$(record)"
       }
     ],
     "menus": {
+      "view/title": [
+        {
+          "command": "sherpa.recordJourney",
+          "group": "navigation@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "sherpa.saveWaypoint",
+          "when": "false"
+        }
+      ],
       "editor/context": [
         {
           "command": "sherpa.addWaypoint"
         }
+      ],
+      "comments/commentThread/context": [
+        {
+          "command": "sherpa.createWaypoint",
+          "group": "inline",
+          "when": "commentController == sherpa-comment && commentThreadIsEmpty"
+        }
+      ],
+      "comments/comment/context": [
+        {
+          "command": "sherpa.saveWaypoint",
+          "group": "inline@2",
+          "when": "commentController == sherpa-comment && sherpa:recording"
+        }
       ]
-    },
-    "comments/commentThread/context": [
-      {
-        "command": "sherpa.createWaypoint",
-        "group": "inline",
-        "when": "commentController == sherpa-comment && commentThreadIsEmpty"
-      }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -119,6 +149,7 @@
   },
   "dependencies": {
     "fs-extra": "^9.1.0",
-    "svelte-icons": "^2.1.0"
+    "svelte-icons": "^2.1.0",
+    "uuidv4": "^6.2.7"
   }
 }
