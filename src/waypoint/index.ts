@@ -7,6 +7,12 @@ import {
   CommentThread,
   CommentMode,
 } from "vscode";
+import { store } from '../store'
+import { getRelativePath } from "../utils/path";
+import * as path from "path";
+import { uuid } from "uuidv4";
+import { SherpaConfig } from "../utils/sherpaConfig";
+import { find } from 'lodash';
 
 let commentId = 1;
 const CONTROLLER_LABEL = "sherpa";
@@ -37,8 +43,28 @@ class SherpaComment implements Comment {
   }
 }
 
-export const createWayPoint = (reply: CommentReply) => {
+export const createWayPoint = async(reply: CommentReply) => {
+  const state = store.getState();
+  const {
+    sherpaPath,
+    currentJourney
+  } = state;
   const thread = reply.thread;
+  const filePath = getRelativePath(path.dirname(sherpaPath), thread.uri.path);
+
+  const waypointId = uuid();
+  const waypoint = {
+    filePath,
+    description: reply.text,
+    id: waypointId
+  };
+
+  const sherpaConfig = await SherpaConfig.fromSherpaConfigPath(state.sherpaPath);
+  let sherpaJSON = await sherpaConfig.read();
+
+  const currentJourneyJSON = find(sherpaJSON.journeys, (j) => j.metadata.id === currentJourney);
+  currentJourneyJSON.waypoints = [...currentJourneyJSON.waypoints, waypoint];
+  
   const newComment = new SherpaComment(
     reply.text,
     undefined,
@@ -50,4 +76,5 @@ export const createWayPoint = (reply: CommentReply) => {
   }
 
   thread.comments = [...thread.comments, newComment];
+  sherpaConfig.write(JSON.stringify(sherpaJSON, null, 2));
 };

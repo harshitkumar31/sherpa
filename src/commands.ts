@@ -27,7 +27,7 @@ export const registerCommands = (context: vscode.ExtensionContext) => {
     })
   );
 
-  context.subscriptions.push(
+  /* context.subscriptions.push(
     vscode.commands.registerCommand(
       `${EXTENSION_NAME}.addWaypoint`,
       async () => {
@@ -54,7 +54,7 @@ export const registerCommands = (context: vscode.ExtensionContext) => {
         }
       }
     )
-  );
+  ); */
 
   context.subscriptions.push(
     vscode.commands.registerCommand(`${EXTENSION_NAME}.refresh`, async () => {
@@ -68,8 +68,8 @@ export const registerCommands = (context: vscode.ExtensionContext) => {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       `${EXTENSION_NAME}.createWaypoint`,
-      (reply: vscode.CommentReply) => {
-        createWayPoint(reply);
+      async(reply: vscode.CommentReply) => {
+        await createWayPoint(reply);
         vscode.commands.executeCommand("setContext", RECORDING_KEY, false);
         vscode.commands.executeCommand("setContext", EDITING_KEY, false);
         commentController?.dispose();

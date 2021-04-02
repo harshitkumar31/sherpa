@@ -25,7 +25,7 @@ export interface Props {
 }
 
 export class SherpaConfig implements Props {
-  configPath: string;
+  public configPath: string;
 
   constructor(props: Props) {
     this.configPath = props.configPath;
@@ -40,12 +40,18 @@ export class SherpaConfig implements Props {
     }
   }
 
-  static async fromSherpaPath(sherpaPath: string) {
+  static async fromFsPath(sherpaPath: string) {
     const [projectRoot, sherpaConfigPath] = await getRootFolders(sherpaPath);
 
     return new SherpaConfig({
       configPath: sherpaConfigPath,
     });
+  }
+
+  static async fromSherpaConfigPath(sherpaConfigPath: string) {
+    return new SherpaConfig({
+      configPath: sherpaConfigPath
+    })
   }
 
   async read(): Promise<any> {

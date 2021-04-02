@@ -1,15 +1,21 @@
 <script>
     import { onMount } from "svelte";
-    import GiCampingTent from 'svelte-icons/gi/GiCampingTent.svelte'
-    import MdAdd from 'svelte-icons/md/MdAdd.svelte'
     import GiForestCamp from 'svelte-icons/gi/GiForestCamp.svelte'
-    let sherpaConfig = "{}";
+    let sherpaConfig = {
+        journeys:[]
+    };
     
     onMount(()=>{
+        tsvscode.postMessage({
+            type: "mount",
+        });
         window.addEventListener("message",(event)=>{
             const message = event.data;
-            sherpaConfig = JSON.parse(message.sherpaConfig);
+            sherpaConfig = message.sherpaConfig;
+            console.log({sherpaConfig});
             switch(message.type) {
+                case 'readSherpaConfig':
+                    break;
                 default:
                 break;
             }
@@ -36,12 +42,7 @@
 </div>
 <div>
     
+    {#each sherpaConfig.journeys as journey}
+	<p>{journey.metadata.title}</p>
+    {/each}
 </div>
-<!-- <div class="svg-vsicon" on:click={()=>{
-    tsvscode.postMessage({
-        type: "command",
-        value: "recordJourney"
-    })
-}}>
-
-</div> -->

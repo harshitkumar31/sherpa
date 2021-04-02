@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
+import { getWorkspaceRoot } from './utils/vscode'
 import { EXTENSION_NAME } from "./constants";
 import { getNonce } from "./getNonce";
+import { SherpaConfig } from "./utils/sherpaConfig";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
@@ -8,7 +10,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   constructor(private readonly _extensionUri: vscode.Uri) {}
 
-  public resolveWebviewView(webviewView: vscode.WebviewView) {
+  public async resolveWebviewView(webviewView: vscode.WebviewView) {
     this._view = webviewView;
 
     webviewView.webview.options = {
@@ -40,8 +42,18 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           vscode.workspace.getWorkspaceFolder(this._extensionUri);
           vscode.commands.executeCommand(`${EXTENSION_NAME}.recordJourney`, this._extensionUri);
         }
+        break;
+        case "mount": {
+          const sherpaConfig = await SherpaConfig.fromFsPath(getWorkspaceRoot()!.uri.path);
+          const sherpaJSON = await sherpaConfig.read();
+          webviewView.webview.postMessage({
+            type: "readSherpaConfig",
+            sherpaConfig: sherpaJSON
+          })
+        }
       }
     });
+    
   }
 
   public revive(panel: vscode.WebviewView) {
